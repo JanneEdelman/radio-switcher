@@ -22,7 +22,11 @@ OTHER_FILES += qml/harbour-radio-switch.qml \
     qml/CoverPage.qml \
     qml/images/2G-icon-86.png \
     qml/images/4G-icon-86.png \
-    qml/images/3G-icon-86.png
+    qml/images/3G-icon-86.png \
+    qml/images/4G-cover-action.png \
+    qml/images/3G-cover-action.png \
+    qml/images/2G-cover-action.png \
+    qml/images/exit-icon.png
 
 RESOURCES +=
 

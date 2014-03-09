@@ -12,6 +12,10 @@ CoverBackground {
     property string icon2G: "images/2G-icon-86.png"
     property string icon3G: "images/3G-icon-86.png"
     property string icon4G: "images/4G-icon-86.png"
+    property string icon2Gcover: "images/2G-cover-action.png"
+    property string icon3Gcover: "images/3G-cover-action.png"
+    property string icon4Gcover: "images/4G-cover-action.png"
+    property string iconExit: "images/exit-icon.png"
 
     Image {
         id: title
@@ -35,57 +39,97 @@ CoverBackground {
         }
     }
 
-    Column {
+    Grid {
         id: statusView
         visible: !quitView.visible
         anchors.top: title.bottom
-        anchors.topMargin: Theme.paddingMedium
-        anchors.horizontalCenter: parent.horizontalCenter
-        spacing: 0
+        anchors.left: cover.left
+        anchors.right: cover.right
+        anchors.margins: Theme.paddingMedium
+        //anchors.horizontalCenter: parent.horizontalCenter
+        clip: true
+        rowSpacing: 2
+        columnSpacing: Theme.paddingMedium
+        columns: 2
 
         Label {
-            id: signalTitle
-            //anchors.top: title.bottom
-            anchors.topMargin: Theme.paddingMedium
-            anchors.horizontalCenter: parent.horizontalCenter
-            font.pixelSize: Theme.fontSizeSmall
+            height: operatorValue.height
+            verticalAlignment: Text.AlignVCenter
+            font.pixelSize: Theme.fontSizeExtraSmall
             color: Theme.highlightColor
-            text: "Signal Strength"
+            text: "Operator"
         }
         Label {
-            id: signalLabel
-            //anchors.top: signalTitle.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            //anchors.topMargin: Theme.paddingLarge*1.3
+            id: operatorValue
             font.pixelSize: Theme.fontSizeSmall
-            text: sigStrengthLabel + sigStrength + " dBm"
+            text: ((networkStatus !== "offline") && (networkStatus !== "no-sim")) ? networkName + " " : "---"
         }
+
         Label {
-            id: networkTitle
-            //anchors.top: signalLabel.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.topMargin: Theme.paddingSmall
-            font.pixelSize: Theme.fontSizeSmall
+            height: networkValue.height
+            verticalAlignment: Text.AlignVCenter
+            font.pixelSize: Theme.fontSizeExtraSmall
             color: Theme.highlightColor
-            text: "Network Status"
+            text: "Network"
         }
         Label {
-            id: networkLabel
-            //anchors.top: networkTitle.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            //anchors.topMargin: Theme.paddingLarge
+            id: networkValue
             font.pixelSize: Theme.fontSizeSmall
-            text: networkStatus
+            text: ((networkStatus !== "offline") && (networkStatus !== "no-sim")) ? technology.toUpperCase() + " " : "---"
+        }
+
+        Label {
+            height: signalValue.height
+            verticalAlignment: Text.AlignVCenter
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: Theme.highlightColor
+            text: "Signal"
+        }
+        Label {
+            id: signalValue
+            font.pixelSize: Theme.fontSizeSmall
+            text: ((networkStatus !== "offline") && (networkStatus !== "no-sim")) ? sigStrength + " dBm" : "---";
+        }
+
+        Label {
+            height: statusValue.height
+            verticalAlignment: Text.AlignVCenter
+            font.pixelSize: Theme.fontSizeExtraSmall
+            color: Theme.highlightColor
+            text: "Status"
+        }
+        Label {
+            id: statusValue
+            font.pixelSize: Theme.fontSizeSmall
+            text: networkStatus + " "
         }
     }
 
     Label {
+        id: connection
+        visible: !quitView.visible
+        anchors.bottom: parent.bottom
+        anchors.horizontalCenter: parent.horizontalCenter
+        anchors.bottomMargin: Theme.paddingSmall
+        font.pixelSize: Theme.fontSizeExtraSmall
+        color: Theme.highlightColor
+        text: (connectionStatus !== "registered") ? connectionStatus : ""
+    }
+
+
+    Label {
         id: quitView
         visible: activeCount > 1
-        anchors.centerIn: parent
-        //anchors.horizontalCenter: parent.horizontalCenter
+        //anchors.centerIn: parent
+        anchors {
+            left: parent.left
+            right: parent.right
+            verticalCenter: parent.verticalCenter
+            margins: Theme.paddingLarge
+        }
         font.pixelSize: Theme.fontSizeSmall
-        text: "Click again to quit"
+        horizontalAlignment: Text.AlignHCenter
+        text: "Radio Switcher\nVersion " + appVersion + "\n"
     }
 
     CoverActionList {
@@ -93,7 +137,7 @@ CoverBackground {
         enabled: activeCount == 1
 
         CoverAction {
-            iconSource: (radioSettings.technologyPreference == "gsm") ? icon3G : icon2G
+            iconSource: (radioSettings.technologyPreference == "gsm") ? icon3Gcover : icon2Gcover
             onTriggered: {
                 if(radioSettings.technologyPreference == "gsm") {
                     setupTechnologyPreference("umts")
@@ -104,13 +148,25 @@ CoverBackground {
         }
 
         CoverAction {
-            iconSource : (radioSettings.technologyPreference == "lte") ? icon3G : icon4G
+            iconSource : (radioSettings.technologyPreference == "lte") ? icon3Gcover : icon4Gcover
             onTriggered: {
                 if(radioSettings.technologyPreference == "lte") {
                     setupTechnologyPreference("umts")
                 } else {
                     setupTechnologyPreference("lte")
                 }
+            }
+        }
+    }
+
+    CoverActionList {
+        id: coverActionExit
+        enabled: !coverAction.enabled
+
+        CoverAction {
+            iconSource : iconExit
+            onTriggered: {
+                Qt.quit();
             }
         }
     }
