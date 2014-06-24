@@ -82,6 +82,7 @@ ApplicationWindow
             technology = networkRegistration.technology;
             switch(technology) {
             case "lte":
+            case "any":
                 sigStrengthLabel = "RSRP: "
                 sigStrength = -137 + (siganlStrength.value * 92/100)
                 break
