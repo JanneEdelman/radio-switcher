@@ -25,6 +25,7 @@ CoverBackground {
         source: {
             switch(radioSettings.technologyPreference) {
             case "lte":
+            case "any":
                 return icon4G
                 break
             case "umts":
@@ -148,12 +149,12 @@ CoverBackground {
         }
 
         CoverAction {
-            iconSource : (radioSettings.technologyPreference == "lte") ? icon3Gcover : icon4Gcover
+            iconSource : (radioSettings.technologyPreference == "lte" || radioSettings.technologyPreference == "any") ? icon3Gcover : icon4Gcover
             onTriggered: {
-                if(radioSettings.technologyPreference == "lte") {
+                if(radioSettings.technologyPreference == "lte" || radioSettings.technologyPreference == "any") {
                     setupTechnologyPreference("umts")
                 } else {
-                    setupTechnologyPreference("lte")
+                    setupTechnologyPreference("any")
                 }
             }
         }
